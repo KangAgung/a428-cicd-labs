@@ -1,20 +1,12 @@
-pipeline {
-    agent {
-        docker {
-            image 'node:lts-slim' 
-            args '-p 3000:3000' 
+node {
+    echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
+
+    docker.image('node:lts-slim').inside('-p 3000:3000') {
+        stage('Build') {
+            sh 'npm install' 
         }
-    }
-    stages {
-        stage('Build') { 
-            steps {
-                sh 'npm install' 
-            }
-        }
-        stage('Test') { 
-            steps {
-                sh './jenkins/scripts/test.sh' 
-            }
+        stage('Test') {
+            sh './jenkins/scripts/test.sh' 
         }
     }
 }
